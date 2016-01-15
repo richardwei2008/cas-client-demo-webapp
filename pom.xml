@@ -150,11 +150,94 @@
     <project.build.sourceVersion>1.7</project.build.sourceVersion>
     <project.build.targetVersion>1.7</project.build.targetVersion>
     <maven.compiler.aspectj.skip>false</maven.compiler.aspectj.skip>
-    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ssa</maven.build.timestamp.format>
+    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
     <cs.dir>${project.basedir}</cs.dir>
     <issues.projectKey>CAS</issues.projectKey>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <project.site.deployDirectory>/tmp/cas-deploy-site</project.site.deployDirectory>
   </properties>
+
+
+  <profiles>
+    <profile>
+      <id>local</id>
+      <properties>
+        <env>local</env>
+      </properties>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>*.bak</exclude>
+            </excludes>
+          </resource>
+          <resource>
+            <directory>src/main/resources-config/local</directory>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+    <profile>
+      <id>dev</id>
+      <properties>
+        <env>dev</env>
+      </properties>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>*.bak</exclude>
+            </excludes>
+          </resource>
+          <resource>
+            <directory>src/main/resources-config/dev</directory>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+    <profile>
+      <id>qa</id>
+      <properties>
+        <env>qa</env>
+      </properties>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>*.bak</exclude>
+            </excludes>
+          </resource>
+          <resource>
+            <directory>src/main/resources-config/qa</directory>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+    <profile>
+      <id>prod</id>
+      <properties>
+        <env>prod</env>
+      </properties>
+      <build>
+        <resources>
+          <resource>
+            <directory>src/main/resources</directory>
+            <excludes>
+              <exclude>*.bak</exclude>
+            </excludes>
+          </resource>
+          <resource>
+            <directory>src/main/resources-config/prod</directory>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
 </project>
