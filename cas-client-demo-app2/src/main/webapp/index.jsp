@@ -31,59 +31,68 @@
     <p><a href="https://app1.hoau.com:8413/cas1/" title="Switch System">App1</a></p>
     <p><a href="https://app2.hoau.com:8423/cas2/" title="Switch System">App2</a></p>
 
-<%
-    if (request.getUserPrincipal() != null) {
-      AttributePrincipal principal = (AttributePrincipal) request.getUserPrincipal();
-      
+      <p>Hello <%=request.getUserPrincipal().getName() %></p>
+      <p>Hello <%= ((AttributePrincipal)request.getUserPrincipal()).getAttributes().get("name") %> </p>
+      <%
+          Map<?,?> attributes = ((AttributePrincipal)request.getUserPrincipal()).getAttributes();
+          if( attributes == null ) {
+              out.println("<b>No Attributes</b>");
+              throw new ServletException("no attributes set by the CAS client");
+          }
+          String name = (String) attributes .get("name");
+          out.println("<b>Name:</b>" + name);
+
+          if (request.getUserPrincipal() != null) {
+              // AttributePrincipal principal = (AttributePrincipal) request.getUserPrincipal();
+
       /*
       final String password = principal.getPassword();
       if (password != null) {
-        System.out.println("<p><b>User Credentials:</b> " + password + "</p>");
+        out.println("<p><b>User Credentials:</b> " + password + "</p>");
       }
       */
-      
-      final Map attributes = principal.getAttributes();
-      
-      if (attributes != null) {
-        Iterator attributeNames = attributes.keySet().iterator();
-        System.out.println("<b>Attributes:</b>");
-        
-        if (attributeNames.hasNext()) {
-          System.out.println("<hr><table border='3pt' width='100%'>");
-          System.out.println("<th colspan='2'>Attributes</th>");
-          System.out.println("<tr><td><b>Key</b></td><td><b>Value</b></td></tr>");
 
-          for (; attributeNames.hasNext();) {
-            System.out.println("<tr><td>");
-            String attributeName = (String) attributeNames.next();
-            System.out.println(attributeName);
-            System.out.println("</td><td>");
-            final Object attributeValue = attributes.get(attributeName);
+              // final Map attributes = principal.getAttributes();
 
-            if (attributeValue instanceof List) {
-              final List values = (List) attributeValue;
-              System.out.println("<strong>Multi-valued attribute: " + values.size() + "</strong>");
-              System.out.println("<ul>");
-              for (Object value: values) {
-                System.out.println("<li>" + value + "</li>");
+              if (attributes != null) {
+                  Iterator attributeNames = attributes.keySet().iterator();
+                  out.println("<b>Attributes:</b>");
+
+                  if (attributeNames.hasNext()) {
+                      out.println("<hr><table border='3pt' width='100%'>");
+                      out.println("<th colspan='2'>Attributes</th>");
+                      out.println("<tr><td><b>Key</b></td><td><b>Value</b></td></tr>");
+
+                      for (; attributeNames.hasNext();) {
+                          out.println("<tr><td>");
+                          String attributeName = (String) attributeNames.next();
+                          out.println(attributeName);
+                          out.println("</td><td>");
+                          final Object attributeValue = attributes.get(attributeName);
+
+                          if (attributeValue instanceof List) {
+                              final List values = (List) attributeValue;
+                              out.println("<strong>Multi-valued attribute: " + values.size() + "</strong>");
+                              out.println("<ul>");
+                              for (Object value: values) {
+                                  out.println("<li>" + value + "</li>");
+                              }
+                              out.println("</ul>");
+                          } else {
+                              out.println(attributeValue);
+                          }
+                          out.println("</td></tr>");
+                      }
+                      out.println("</table>");
+                  } else {
+                      out.print("No attributes are supplied by the CAS server.</p>");
+                  }
+              } else {
+                  out.println("<pre>The attribute map is empty. Review your CAS filter configurations.</pre>");
               }
-              System.out.println("</ul>");
-            } else {
-              System.out.println(attributeValue);
-            }
-            System.out.println("</td></tr>");
+          } else {
+              out.println("<pre>The user principal is empty from the request object. Review the wrapper filter configuration.</pre>");
           }
-          System.out.println("</table>");
-        } else {
-          System.out.print("No attributes are supplied by the CAS server.</p>");
-        }
-      } else {
-        System.out.println("<pre>The attribute map is empty. Review your CAS filter configurations.</pre>");
-      }
-    } else {
-        System.out.println("<pre>The user principal is empty from the request object. Review the wrapper filter configuration.</pre>");
-    }
-%>
-
+      %>
     </body>
 </html>
